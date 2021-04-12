@@ -1,0 +1,43 @@
+{
+  "name": "lsb/pricelist-bundle",
+  "type": "symfony-bundle",
+  "description": "Pricelist Bundle",
+  "license": "MIT",
+  "keywords": [
+    "symfony",
+    "pricelist"
+  ],
+  "homepage": "https://lsbdata.com",
+  "authors": [
+    {
+      "name": "LSB DATA",
+      "email": "piotr.bazylewicz@lsb.com.pl"
+    }
+  ],
+  "require": {
+    "php": "^7.4 | ^8.0",
+    "symfony/framework-bundle": "^5.2",
+    "symfony/orm-pack": "^2.0",
+    "symfony/validator": "^5.2",
+    "lsb/utility-bundle": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "symfony/phpunit-bridge": "^5.0",
+    "php-coveralls/php-coveralls": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "LSB\\PricelistBundle\\": ""
+    },
+    "exclude-from-classmap": [
+      "Tests/"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/LSBDataWeFeelITPublic/LSBUtilityBundle.git"
+    }
+  ]
+}
