@@ -1,1 +1,9 @@
 services:
+
+    LSB\PricelistBundle\Form\PricelistType:
+        tags:
+            - {name: form.type}
+
+    LSB\PricelistBundle\Form\PricelistPositionType:
+        tags:
+            - {name: form.type}

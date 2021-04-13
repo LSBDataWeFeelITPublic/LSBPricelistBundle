@@ -1,1 +1,11 @@
 services:
+
+    LSB\PricelistBundle\Repository\PricelistRepository:
+        arguments:
+            - '@doctrine'
+    LSB\PricelistBundle\Repository\PricelistRepositoryInterface: '@LSB\PricelistBundle\Repository\PricelistRepository'
+
+    LSB\PricelistBundle\Repository\PricelistPositionRepository:
+        arguments:
+            - '@doctrine'
+    LSB\PricelistBundle\Repository\PricelistPositionRepositoryInterface: '@LSB\PricelistBundle\Repository\PricelistPositionRepository'

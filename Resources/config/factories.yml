@@ -1,1 +1,15 @@
 services:
+
+    LSB\PricelistBundle\Factory\PricelistFactory:
+        arguments:
+            - '%lsb_pricelist.config.resources.pricelist.class.entity%'
+    lsb_pricelist_factory_pricelist:
+        alias: LSB\PricelistBundle\Factory\PricelistFactory
+    LSB\PricelistBundle\Factory\PricelistFactoryInterface: '@LSB\PricelistBundle\Factory\PricelistFactory'
+
+    LSB\PricelistBundle\Factory\PricelistPositionFactory:
+        arguments:
+            - '%lsb_pricelist.config.resources.pricelist_position.class.entity%'
+    lsb_pricelist_factory_pricelist_position:
+        alias: LSB\PricelistBundle\Factory\PricelistPositionFactory
+    LSB\PricelistBundle\Factory\PricelistPositionFactoryInterface: '@LSB\PricelistBundle\Factory\PricelistPositionFactory'

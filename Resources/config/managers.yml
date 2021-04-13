@@ -1,1 +1,9 @@
 services:
+
+    LSB\PricelistBundle\Manager\PricelistManager:
+        arguments:
+            - '@lsb_utility_object_manager'
+
+    LSB\PricelistBundle\Manager\PricelistPositionManager:
+        arguments:
+            - '@lsb_utility_object_manager'
