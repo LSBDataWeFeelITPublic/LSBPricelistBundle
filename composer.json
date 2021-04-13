@@ -53,6 +53,10 @@
     {
       "type": "git",
       "url": "https://github.com/LSBDataWeFeelITPublic/LSBProductBundle.git"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/LSBDataWeFeelITPublic/TranslationFormBundle.git"
     }
   ]
 }
