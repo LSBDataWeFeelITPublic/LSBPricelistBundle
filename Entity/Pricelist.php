@@ -11,10 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 use LSB\LocaleBundle\Entity\CurrencyInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\MappedSuperclass;
 
 /**
  * Class Pricelist
  * @package LSB\PricelistBundle\Entity
+ *
+ * @MappedSuperclass
  */
 class Pricelist implements PricelistInterface
 {

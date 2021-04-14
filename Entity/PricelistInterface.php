@@ -6,11 +6,12 @@ namespace LSB\PricelistBundle\Entity;
 use LSB\ContractorBundle\Entity\ContractorInterface;
 use LSB\LocaleBundle\Entity\CurrencyInterface;
 use Doctrine\Common\Collections\Collection;
+use LSB\UtilityBundle\Interfaces\UuidInterface;
 
 /**
  * Interface PricelistInterface
  */
-interface PricelistInterface
+interface PricelistInterface extends UuidInterface
 {
     public function isEnabled(): bool;
 

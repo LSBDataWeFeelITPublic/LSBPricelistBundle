@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace LSB\PricelistBundle\Entity;
 
 use LSB\ProductBundle\Entity\ProductInterface;
+use LSB\UtilityBundle\Interfaces\IdInterface;
+use LSB\UtilityBundle\Interfaces\PositionInterface;
 
 /**
  * Interface PricelistPositionInterface
  */
-interface PricelistPositionInterface
+interface PricelistPositionInterface extends IdInterface, PositionInterface
 {
     public function getPricelist(): PricelistInterface;
 

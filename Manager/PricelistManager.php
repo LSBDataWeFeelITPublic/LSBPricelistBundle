@@ -85,13 +85,13 @@ class PricelistManager extends BaseManager
             $currencyCode,
             $contractor ? $contractor->getId() : null
         );
-
-        if (!empty($priceResult)) {
+        
+        if (!empty($priceResult) && $priceResult[0]['productid']) {
             return new Price(
-                $priceResult['netPrice'],
-                $priceResult['grossPrice'],
-                $priceResult['vat'],
-                $priceResult['currencyCode']
+                $priceResult[0]['netprice'],
+                $priceResult[0]['grossprice'],
+                $priceResult[0]['vat'],
+                $priceResult[0]['currencycode']
             );
         }
 

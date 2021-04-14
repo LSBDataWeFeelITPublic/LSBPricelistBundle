@@ -9,10 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use LSB\ProductBundle\Entity\ProductInterface;
 use LSB\UtilityBundle\Traits\PositionTrait;
+use Doctrine\ORM\Mapping\MappedSuperclass;
 
 /**
  * Class PricelistPosition
  * @package LSB\PricelistBundle\Entity
+ *
+ * @MappedSuperclass
  */
 class PricelistPosition implements PricelistPositionInterface
 {

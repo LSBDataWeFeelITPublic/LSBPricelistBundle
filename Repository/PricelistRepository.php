@@ -36,6 +36,8 @@ class PricelistRepository extends ServiceEntityRepository implements PricelistRe
      */
     public function pricelistProcedureProduct(int $productID, string $dateString, string $currencyCode, ?int $contractorID): ?array
     {
-        return []; //TODO
+        $sql = "SELECT * FROM pricelist_product_price($productID, '$dateString', '$currencyCode', " . ($contractorID ?? 'NULL') . ")";
+
+        return $this->_em->getConnection()->executeQuery($sql)->fetchAllAssociative();
     }
 }
