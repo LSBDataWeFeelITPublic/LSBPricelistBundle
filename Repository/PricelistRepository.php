@@ -27,4 +27,15 @@ class PricelistRepository extends ServiceEntityRepository implements PricelistRe
         parent::__construct($registry, $stringClass ?? Pricelist::class);
     }
 
+    /**
+     * @param int $productID
+     * @param string $dateString
+     * @param string $currencyCode
+     * @param int|null $contractorID
+     * @return array|null
+     */
+    public function pricelistProcedureProduct(int $productID, string $dateString, string $currencyCode, ?int $contractorID): ?array
+    {
+        return []; //TODO
+    }
 }

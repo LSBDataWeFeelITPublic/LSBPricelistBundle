@@ -12,4 +12,6 @@ use LSB\UtilityBundle\Repository\RepositoryInterface;
 interface PricelistRepositoryInterface extends RepositoryInterface
 {
 
+    public function pricelistProcedureProduct(int $productID, string $dateString, string $currencyCode, ?int $contractorID): ?array;
+
 }

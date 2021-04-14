@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Manager;
 
+use LSB\ContractorBundle\Entity\ContractorInterface;
+use LSB\LocaleBundle\Entity\CurrencyInterface;
 use LSB\PricelistBundle\Entity\PricelistInterface;
 use LSB\PricelistBundle\Factory\PricelistFactoryInterface;
+use LSB\PricelistBundle\Model\Price;
 use LSB\PricelistBundle\Repository\PricelistRepositoryInterface;
+use LSB\ProductBundle\Entity\ProductInterface;
 use LSB\UtilityBundle\Factory\FactoryInterface;
 use LSB\UtilityBundle\Form\BaseEntityType;
 use LSB\UtilityBundle\Manager\ObjectManagerInterface;
@@ -13,9 +17,9 @@ use LSB\UtilityBundle\Manager\BaseManager;
 use LSB\UtilityBundle\Repository\RepositoryInterface;
 
 /**
-* Class PricelistManager
-* @package LSB\PricelistBundle\Manager
-*/
+ * Class PricelistManager
+ * @package LSB\PricelistBundle\Manager
+ */
 class PricelistManager extends BaseManager
 {
 
@@ -57,5 +61,40 @@ class PricelistManager extends BaseManager
     public function getRepository(): PricelistRepositoryInterface
     {
         return parent::getRepository();
+    }
+
+    /**
+     * @param ProductInterface $product
+     * @param \DateTime|null $date
+     * @param CurrencyInterface|null $currency
+     * @param ContractorInterface|null $contractor
+     * @return Price|null
+     */
+    public function getPriceForProduct(
+        ProductInterface $product,
+        ?\DateTime $date = null,
+        ?CurrencyInterface $currency = null,
+        ?ContractorInterface $contractor = null
+    ): ?Price {
+        $date = $date ?? new \DateTime();
+        $currencyCode = $currency ? $currency->getIsoCode() : 'PLN'; // TODO default currency z configa
+
+        $priceResult = $this->getRepository()->pricelistProcedureProduct(
+            $product->getId(),
+            $date->format('Y-m-d'),
+            $currencyCode,
+            $contractor ? $contractor->getId() : null
+        );
+
+        if (!empty($priceResult)) {
+            return new Price(
+                $priceResult['netPrice'],
+                $priceResult['grossPrice'],
+                $priceResult['vat'],
+                $priceResult['currencyCode']
+            );
+        }
+
+        return null;
     }
 }
