@@ -79,8 +79,8 @@ class PricelistManager extends BaseManager
     ): ?Price {
 
         $date = $date ?? new \DateTime();
-        $currencyCode = $currency ? $currency->getIsoCode() : 'PLN'; // TODO default currency z configa
-        $positionsPriceType = $positionsPriceType ?? 'net'; // TODO default z configa
+        $currencyCode = $currency ? $currency->getIsoCode() : $this->getConfiguration()['defaults']['currencyCode'];
+        $positionsPriceType = $positionsPriceType ?? $this->getConfiguration()['defaults']['positionsPriceType'];
 
         $priceResult = $this->getRepository()->pricelistProcedureProduct(
             $product->getId(),

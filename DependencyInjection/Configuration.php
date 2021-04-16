@@ -38,6 +38,12 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
             ->children()
+            ->arrayNode('defaults')
+            ->children()
+            ->scalarNode('currencyCode')->end()
+            ->scalarNode('positionsPriceType')->end()
+            ->end()
+            ->end()
             ->scalarNode(BE::CONFIG_KEY_TRANSLATION_DOMAIN)->defaultValue((new \ReflectionClass(LSBPricelistBundle::class))->getShortName())->end()
             ->arrayNode(BE::CONFIG_KEY_RESOURCES)
             ->children()

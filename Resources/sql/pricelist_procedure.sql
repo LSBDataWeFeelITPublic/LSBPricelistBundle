@@ -1,11 +1,14 @@
 DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, varchar(10), varchar(20), integer);
+DROP FUNCTION IF EXISTS pricelist_product_list(date, varchar(10), varchar(20), integer);
 DROP FUNCTION IF EXISTS get_base_pricelist_position(integer, date, varchar(10), varchar(20));
+
 DROP TYPE IF EXISTS price;
 DROP TYPE IF EXISTS basePrice;
 DROP TYPE IF EXISTS netGrossPrice;
 
 CREATE TYPE price AS
 (
+    id                   integer,
     product_id           integer,
     price                numeric,
     discount             numeric,
@@ -74,7 +77,8 @@ BEGIN
     contractorFOUND := false;
     if _contractor_id is not null then
 
-        SELECT prod.id,
+        SELECT 1,
+               prod.id,
                plp.price,
                plp.discount,
                null,
@@ -154,6 +158,62 @@ $BODY$
     LANGUAGE plpgsql
     VOLATILE
     COST 100;
+
+
+-- USAGE: SELECT pricelist_product_list(_date, _positions_price_type, _currency_code, _contractor_id)
+CREATE OR REPLACE FUNCTION pricelist_product_list(_date date,
+                                                  _positions_price_type varchar(10),
+                                                  _currency_code varchar(20),
+                                                  _contractor_id integer)
+    RETURNS boolean AS
+$BODY$
+
+DECLARE
+    rec     price;
+    r       record;
+    last_id integer := 0;
+BEGIN
+
+    CREATE TEMP TABLE IF NOT EXISTS app_pricelist_product_list
+    (
+        id                   serial NOT NULL,
+        product_id           integer,
+        price                numeric,
+        discount             numeric,
+        net_price            numeric,
+        gross_price          numeric,
+        base_price           numeric,
+        base_net_price       numeric,
+        base_gross_price     numeric,
+        is_contractor_price  boolean,
+        vat                  numeric,
+        positions_price_type varchar(10),
+        currency_code        varchar(20),
+        CONSTRAINT app_pricelist_product_list_pkey PRIMARY KEY (id)
+    );
+    truncate app_pricelist_product_list;
+
+    FOR r IN
+        select distinct plp.product_id from app_pricelist_position plp
+        LOOP
+            -- RAISE NOTICE 'LOOP % - %', last_id, customer;
+            rec := pricelist_product_price(r.product_id, _date, _positions_price_type, _currency_code, _contractor_id);
+            if rec.product_id is not null then
+                last_id := last_id + 1;
+                rec.id := last_id;
+                insert into app_pricelist_product_list values (rec.*);
+            END IF;
+        END LOOP;
+
+    RETURN true;
+END;
+
+
+$BODY$
+    LANGUAGE plpgsql
+    VOLATILE
+    COST 100;
+
 
 
 -- USAGE: SELECT * FROM get_base_pricelist_position(_product_id, _date, _positions_price_type, _currency_code)
