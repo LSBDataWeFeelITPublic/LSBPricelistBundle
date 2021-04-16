@@ -73,25 +73,33 @@ class PricelistManager extends BaseManager
     public function getPriceForProduct(
         ProductInterface $product,
         ?\DateTime $date = null,
+        ?string $positionsPriceType = null,
         ?CurrencyInterface $currency = null,
         ?ContractorInterface $contractor = null
     ): ?Price {
+
         $date = $date ?? new \DateTime();
         $currencyCode = $currency ? $currency->getIsoCode() : 'PLN'; // TODO default currency z configa
+        $positionsPriceType = $positionsPriceType ?? 'net'; // TODO default z configa
 
         $priceResult = $this->getRepository()->pricelistProcedureProduct(
             $product->getId(),
             $date->format('Y-m-d'),
+            $positionsPriceType,
             $currencyCode,
             $contractor ? $contractor->getId() : null
         );
-        
-        if (!empty($priceResult) && $priceResult[0]['productid']) {
+
+        if (!empty($priceResult) && $priceResult[0]['product_id']) {
+
             return new Price(
-                $priceResult[0]['netprice'],
-                $priceResult[0]['grossprice'],
-                $priceResult[0]['vat'],
-                $priceResult[0]['currencycode']
+                (float)str_replace(",", ".", $priceResult[0]['price']),
+                (float)str_replace(",", ".", $priceResult[0]['net_price']),
+                (float)str_replace(",", ".", $priceResult[0]['gross_price']),
+                (float)str_replace(",", ".", $priceResult[0]['base_net_price']),
+                (float)str_replace(",", ".", $priceResult[0]['base_gross_price']),
+                (float)str_replace(",", ".", $priceResult[0]['vat']),
+                $priceResult[0]['currency_code']
             );
         }
 

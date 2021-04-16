@@ -30,13 +30,16 @@ class PricelistRepository extends ServiceEntityRepository implements PricelistRe
     /**
      * @param int $productID
      * @param string $dateString
+     * @param string $positionsPriceType
      * @param string $currencyCode
      * @param int|null $contractorID
      * @return array|null
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function pricelistProcedureProduct(int $productID, string $dateString, string $currencyCode, ?int $contractorID): ?array
+    public function pricelistProcedureProduct(int $productID, string $dateString, string $positionsPriceType, string $currencyCode, ?int $contractorID): ?array
     {
-        $sql = "SELECT * FROM pricelist_product_price($productID, '$dateString', '$currencyCode', " . ($contractorID ?? 'NULL') . ")";
+        $sql = "SELECT * FROM pricelist_product_price($productID, '$dateString', '$positionsPriceType', '$currencyCode', " . ($contractorID ?? 'NULL') . ")";
 
         return $this->_em->getConnection()->executeQuery($sql)->fetchAllAssociative();
     }
