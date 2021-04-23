@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use LSB\PricelistBundle\Entity\PricelistPosition;
+use LSB\UtilityBundle\Repository\BaseRepository;
 use LSB\UtilityBundle\Repository\PaginationInterface;
 use LSB\UtilityBundle\Repository\PaginationRepositoryTrait;
 
@@ -13,7 +13,7 @@ use LSB\UtilityBundle\Repository\PaginationRepositoryTrait;
  * Class PricelistPositionRepository
  * @package LSB\PricelistBundle\Repository
  */
-class PricelistPositionRepository extends ServiceEntityRepository implements PricelistPositionRepositoryInterface, PaginationInterface
+class PricelistPositionRepository extends BaseRepository implements PricelistPositionRepositoryInterface, PaginationInterface
 {
     use PaginationRepositoryTrait;
 
