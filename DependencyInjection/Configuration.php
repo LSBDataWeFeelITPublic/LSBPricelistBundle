@@ -43,8 +43,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('positionsPriceType')->end()
             ->end()
             ->end()
-            ->scalarNode(BE::CONFIG_KEY_TRANSLATION_DOMAIN)->defaultValue((new \ReflectionClass(LSBPricelistBundle::class))->getShortName())->end()
-            ->arrayNode(BE::CONFIG_KEY_RESOURCES)
+            ->bundleTranslationDomainScalar(LSBPriceListBundle::class)->end()
+            ->resourcesNode()
             ->children()
 
             //Pricelist
