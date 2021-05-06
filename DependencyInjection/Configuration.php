@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\DependencyInjection;
 
+use LSB\PricelistBundle\Entity\Pricelist;
 use LSB\PricelistBundle\Entity\PricelistInterface;
+use LSB\PricelistBundle\Entity\PricelistPosition;
 use LSB\PricelistBundle\Entity\PricelistPositionInterface;
 use LSB\PricelistBundle\Factory\PricelistFactory;
 use LSB\PricelistBundle\Factory\PricelistPositionFactory;
@@ -50,6 +52,7 @@ class Configuration implements ConfigurationInterface
             //Pricelist
             ->resourceNode(
                 'pricelist',
+                PriceList::class,
                 PricelistInterface::class,
                 PricelistFactory::class,
                 PricelistRepository::class,
@@ -61,6 +64,7 @@ class Configuration implements ConfigurationInterface
             //Pricelist position
             ->resourceNode(
                 'pricelist_position',
+                PriceListPosition::class,
                 PricelistPositionInterface::class,
                 PricelistPositionFactory::class,
                 PricelistPositionRepository::class,
