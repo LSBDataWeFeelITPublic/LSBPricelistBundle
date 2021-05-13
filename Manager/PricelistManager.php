@@ -79,8 +79,8 @@ class PricelistManager extends BaseManager
     ): ?Price {
 
         $date = $date ?? new \DateTime();
-        $currencyCode = $currency ? $currency->getIsoCode() : $this->getConfiguration()['defaults']['currencyCode'];
-        $positionsPriceType = $positionsPriceType ?? $this->getConfiguration()['defaults']['positionsPriceType'];
+        $currencyCode = $currency ? $currency->getIsoCode() : $this->getBundleConfiguration()['defaults']['currencyCode'];
+        $positionsPriceType = $positionsPriceType ?? $this->getBundleConfiguration()['defaults']['positionsPriceType'];
 
         $priceResult = $this->getRepository()->pricelistProcedureProduct(
             $product->getId(),
@@ -93,16 +93,25 @@ class PricelistManager extends BaseManager
         if (!empty($priceResult) && $priceResult[0]['product_id']) {
 
             return new Price(
-                (float)str_replace(",", ".", $priceResult[0]['price']),
-                (float)str_replace(",", ".", $priceResult[0]['net_price']),
-                (float)str_replace(",", ".", $priceResult[0]['gross_price']),
-                (float)str_replace(",", ".", $priceResult[0]['base_net_price']),
-                (float)str_replace(",", ".", $priceResult[0]['base_gross_price']),
-                (float)str_replace(",", ".", $priceResult[0]['vat']),
+                $this->stringToFloat($priceResult[0]['price']),
+                $this->stringToFloat($priceResult[0]['net_price']),
+                $this->stringToFloat($priceResult[0]['gross_price']),
+                $this->stringToFloat($priceResult[0]['base_net_price']),
+                $this->stringToFloat($priceResult[0]['base_gross_price']),
+                $this->stringToFloat($priceResult[0]['vat']),
                 $priceResult[0]['currency_code']
             );
         }
 
         return null;
+    }
+
+    /**
+     * @param string $price
+     * @return float
+     */
+    public function stringToFloat(string $price): float
+    {
+        return (float)str_replace(",", ".", $price);
     }
 }
