@@ -7,14 +7,20 @@ use LSB\PricelistBundle\Entity\Pricelist;
 use LSB\PricelistBundle\Entity\PricelistInterface;
 use LSB\PricelistBundle\Entity\PricelistPosition;
 use LSB\PricelistBundle\Entity\PricelistPositionInterface;
+use LSB\PricelistBundle\Entity\PricelistProductList;
+use LSB\PricelistBundle\Entity\PricelistProductListInterface;
 use LSB\PricelistBundle\Factory\PricelistFactory;
 use LSB\PricelistBundle\Factory\PricelistPositionFactory;
+use LSB\PricelistBundle\Factory\PricelistProductListFactory;
 use LSB\PricelistBundle\Form\PricelistPositionType;
+use LSB\PricelistBundle\Form\PricelistProductListType;
 use LSB\PricelistBundle\Form\PricelistType;
 use LSB\PricelistBundle\LSBPricelistBundle;
 use LSB\PricelistBundle\Manager\PricelistManager;
 use LSB\PricelistBundle\Manager\PricelistPositionManager;
+use LSB\PricelistBundle\Manager\PricelistProductListManager;
 use LSB\PricelistBundle\Repository\PricelistPositionRepository;
+use LSB\PricelistBundle\Repository\PricelistProductListRepository;
 use LSB\PricelistBundle\Repository\PricelistRepository;
 use LSB\UtilityBundle\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -73,6 +79,17 @@ class Configuration implements ConfigurationInterface
             )
             ->end()
 
+            //Pricelist Product List
+            ->resourceNode(
+                'pricelist_product_list',
+                PricelistProductList::class,
+                PricelistProductListInterface::class,
+                PricelistProductListFactory::class,
+                PricelistProductListRepository::class,
+                PricelistProductListManager::class,
+                PricelistProductListType::class
+            )
+            ->end()
             ->end()
             ->end()
             ->end();

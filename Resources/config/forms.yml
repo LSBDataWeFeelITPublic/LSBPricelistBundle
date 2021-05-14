@@ -7,3 +7,10 @@ services:
     LSB\PricelistBundle\Form\PricelistPositionType:
         tags:
             - {name: form.type}
+
+    LSB\PricelistBundle\Form\PricelistProductListType:
+        tags:
+            -
+                name: form.type
+        #   FIXME: Poprawna forma zapisu:
+        #  - {name: form.type}

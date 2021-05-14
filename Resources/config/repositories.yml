@@ -9,3 +9,8 @@ services:
         arguments:
             - '@doctrine'
     LSB\PricelistBundle\Repository\PricelistPositionRepositoryInterface: '@LSB\PricelistBundle\Repository\PricelistPositionRepository'
+
+    LSB\PricelistBundle\Repository\PricelistProductListRepository:
+        arguments:
+            - '@doctrine'
+    LSB\PricelistBundle\Repository\PricelistProductListRepositoryInterface: '@LSB\PricelistBundle\Repository\PricelistProductListRepository'
