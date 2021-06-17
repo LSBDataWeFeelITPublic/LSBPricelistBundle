@@ -19,10 +19,10 @@
     "symfony/framework-bundle": "^5.2",
     "symfony/orm-pack": "^2.0",
     "symfony/validator": "^5.2",
-    "lsb/utility-bundle": "dev-master",
-    "lsb/locale-bundle": "dev-master",
-    "lsb/contractor-bundle": "dev-master",
-    "lsb/product-bundle": "dev-master"
+    "lsb/utility-bundle": "^0.4",
+    "lsb/locale-bundle": "^0.1",
+    "lsb/contractor-bundle": "^0.3",
+    "lsb/product-bundle": "^0.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
