@@ -7,7 +7,6 @@ matrix:
     fast_finish: true
     include:
         - php: 7.4
-          env: COMPOSER_FLAGS="--prefer-lowest"
 
 sudo: false
 
@@ -16,7 +15,7 @@ cache:
         - $HOME/.composer/cache/files
 
 install:
-    - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+    - composer update --prefer-dist --no-interaction
 
 script:
     # - composer validate --strict --no-check-lock
