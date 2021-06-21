@@ -6,14 +6,13 @@ namespace LSB\PricelistBundle\Repository;
 use Doctrine\Persistence\ManagerRegistry;
 use LSB\PricelistBundle\Entity\PricelistProductList;
 use LSB\UtilityBundle\Repository\BaseRepository;
-use LSB\UtilityBundle\Repository\PaginationInterface;
 use LSB\UtilityBundle\Repository\PaginationRepositoryTrait;
 
 /**
  * Class PricelistProductListRepository
  * @package LSB\PricelistBundle\Repository
  */
-class PricelistProductListRepository extends BaseRepository implements PricelistProductListRepositoryInterface, PaginationInterface
+class PricelistProductListRepository extends BaseRepository implements PricelistProductListRepositoryInterface
 {
     use PaginationRepositoryTrait;
 
