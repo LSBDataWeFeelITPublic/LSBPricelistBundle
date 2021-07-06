@@ -6,6 +6,7 @@ namespace LSB\PricelistBundle\Calculator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ObjectRepository;
+use LSB\PricelistBundle\Service\TotalCalculatorManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -46,6 +47,11 @@ abstract class BaseTotalCalculator implements TotalCalculatorInterface
      * @var array
      */
     protected array $attributes = [];
+
+    /**
+     * @var TotalCalculatorManager
+     */
+    protected TotalCalculatorManager $totalCalculatorManager;
 
     /**
      * BaseTotalCalculator constructor.
@@ -136,4 +142,21 @@ abstract class BaseTotalCalculator implements TotalCalculatorInterface
         return $this->getSupportedClass().' '.$this->getName();
     }
 
+    /**
+     * @return TotalCalculatorManager
+     */
+    public function getTotalCalculatorManager(): TotalCalculatorManager
+    {
+        return $this->totalCalculatorManager;
+    }
+
+    /**
+     * @param TotalCalculatorManager $totalCalculatorManager
+     * @return BaseTotalCalculator
+     */
+    public function setTotalCalculatorManager(TotalCalculatorManager $totalCalculatorManager): static
+    {
+        $this->totalCalculatorManager = $totalCalculatorManager;
+        return $this;
+    }
 }

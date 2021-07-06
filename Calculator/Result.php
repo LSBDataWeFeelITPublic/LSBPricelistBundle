@@ -34,7 +34,7 @@ class Result
     /**
      * @var mixed
      */
-    protected $subject;
+    protected mixed $subject;
 
     /**
      * @var array
@@ -60,7 +60,7 @@ class Result
      * Result constructor.
      * @param bool $isSuccess
      * @param CurrencyInterface|null $currency
-     * @param float $totalNetto
+     * @param float $totalNet
      * @param float $totalGross
      * @param null $subject
      * @param array $calculationRes
@@ -71,7 +71,7 @@ class Result
     public function __construct(
         bool $isSuccess,
         ?CurrencyInterface $currency,
-        float $totalNetto,
+        float $totalNet,
         float $totalGross,
         $subject = null,
         array &$calculationRes = [],
@@ -81,7 +81,7 @@ class Result
     ) {
         $this->isSuccess = $isSuccess;
         $this->currency = $currency;
-        $this->totalNet = $totalNetto;
+        $this->totalNet = $totalNet;
         $this->totalGross = $totalGross;
         $this->subject = $subject;
         $this->calculationRes = $calculationRes;

@@ -1,1 +1,10 @@
 services:
+    LSB\PricelistBundle\Service\TotalCalculatorManager:
+        arguments:
+            - '@parameter_bag'
+            - '@doctrine.orm.entity_manager'
+            - '@LSB\PricelistBundle\Manager\PricelistManager'
+            - '@event_dispatcher'
+            - '@security.token_storage'
+            - '@LSB\LocaleBundle\Manager\TaxManager'
+            - '@LSB\LocaleBundle\Manager\CurrencyManager'

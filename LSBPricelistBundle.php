@@ -4,6 +4,7 @@ namespace LSB\PricelistBundle;
 
 use LSB\PricelistBundle\DependencyInjection\Compiler\AddManagerResourcePass;
 use LSB\PricelistBundle\DependencyInjection\Compiler\AddResolveEntitiesPass;
+use LSB\PricelistBundle\DependencyInjection\Compiler\AddTotalCalculatorPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -24,9 +25,8 @@ class LSBPricelistBundle extends Bundle
 
         $builder
             ->addCompilerPass(new AddManagerResourcePass())
+            ->addCompilerPass(new AddTotalCalculatorPass())
             ->addCompilerPass(new AddResolveEntitiesPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
         ;
     }
-
-
 }
