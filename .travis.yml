@@ -15,7 +15,6 @@ cache:
         - $HOME/.composer/cache/files
 
 install:
-    - composer global require scrutinizer/ocular
     - composer update --prefer-dist --no-interaction
 
 script:
