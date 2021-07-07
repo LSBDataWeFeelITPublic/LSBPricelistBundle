@@ -21,4 +21,4 @@ install:
 script:
     # - composer validate --strict --no-check-lock
     - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover=coverage.clover
-    - ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+    - vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
