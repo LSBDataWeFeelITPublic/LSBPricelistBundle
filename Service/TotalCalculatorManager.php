@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Service;
 
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use LSB\LocaleBundle\Entity\CurrencyInterface;
 use LSB\LocaleBundle\Manager\CurrencyManager;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Class TotalCalculatorManager
  * @package LSB\PricelistBundle\Service
  */
-class TotalCalculatorManager
+class TotalCalculatorManager implements TotalCalculatorManagerInterface
 {
     /**
      * @var string
@@ -67,6 +66,22 @@ class TotalCalculatorManager
      */
     protected CurrencyManager $currencyManager;
 
+    /**
+     * @var CalculatorModuleInventory
+     */
+    protected CalculatorModuleInventory $calculatorModuleInventory;
+
+    /**
+     * TotalCalculatorManager constructor.
+     * @param ParameterBagInterface $ps
+     * @param EntityManagerInterface $em
+     * @param PricelistManager $priceListManager
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param TokenStorageInterface $tokenStorage
+     * @param TaxManager $taxManager
+     * @param CurrencyManager $currencyManager
+     * @param CalculatorModuleInventory $calculatorModuleInventory
+     */
     public function __construct(
         ParameterBagInterface $ps,
         EntityManagerInterface $em,
@@ -74,7 +89,8 @@ class TotalCalculatorManager
         EventDispatcherInterface $eventDispatcher,
         TokenStorageInterface $tokenStorage,
         TaxManager $taxManager,
-        CurrencyManager $currencyManager
+        CurrencyManager $currencyManager,
+        CalculatorModuleInventory $calculatorModuleInventory
     ) {
         $this->ps = $ps;
         $this->em = $em;
@@ -83,17 +99,20 @@ class TotalCalculatorManager
         $this->tokenStorage = $tokenStorage;
         $this->taxManager = $taxManager;
         $this->currencyManager = $currencyManager;
+        $this->calculatorModuleInventory = $calculatorModuleInventory;
     }
 
     /**
      * @param TotalCalculatorInterface $totalCalculator
      * @param array $attrs
      * @throws \Exception
+     * @deprecated
      */
     public function addTotalCalculator(
         TotalCalculatorInterface $totalCalculator,
         array $attrs = []
     ): void {
+        return;
         $totalCalculator->setAttributes($attrs);
 
         if (!$totalCalculator->getName()) {
@@ -132,30 +151,20 @@ class TotalCalculatorManager
 
         $class = $subject::class;
 
-        dump($class);
-
         if (!$class) {
             throw new \Exception('Subject class name cannot be determined.');
         }
 
-        //Exact class match
-        /** @var string $calculatorSupportedClass */
-        foreach ($this->totalCalculators as $calculatorSupportedClass => $calculators) {
-            if ($calculatorSupportedClass === $class) {
+        $totalCalculator = $this->calculatorModuleInventory->getModuleByName($class, $name, false);
 
-                /** @var TotalCalculatorInterface $totalCalculator*/
-                foreach ($calculators as $calculatorName => $totalCalculator) {
-                    if ($calculatorName === $name) {
-                        $totalCalculator->setTotalCalculatorManager($this);
-                        return $totalCalculator;
-                    }
-                }
-            }
+        if ($totalCalculator instanceof TotalCalculatorInterface) {
+            $totalCalculator->setTotalCalculatorManager($this);
+            return $totalCalculator;
         }
 
         //First implemented
         /** @var string $calculatorSupportedClass */
-        foreach ($this->totalCalculators as $calculatorSupportedClass => $calculators) {
+        foreach ($this->calculatorModuleInventory->getModules() as $calculatorSupportedClass => $calculators) {
             if (is_subclass_of($class, $calculatorSupportedClass)) {
 
                 /** @var TotalCalculatorInterface $totalCalculator*/

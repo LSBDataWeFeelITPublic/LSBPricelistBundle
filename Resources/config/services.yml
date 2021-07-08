@@ -8,3 +8,6 @@ services:
             - '@security.token_storage'
             - '@LSB\LocaleBundle\Manager\TaxManager'
             - '@LSB\LocaleBundle\Manager\CurrencyManager'
+            - '@LSB\PricelistBundle\Service\CalculatorModuleInventory'
+
+    LSB\PricelistBundle\Service\CalculatorModuleInventory: ~
