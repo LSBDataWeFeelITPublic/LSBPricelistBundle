@@ -12,6 +12,7 @@ use LSB\PricelistBundle\Repository\PricelistRepositoryInterface;
 use LSB\ProductBundle\Entity\ProductInterface;
 use LSB\UtilityBundle\Factory\FactoryInterface;
 use LSB\UtilityBundle\Form\BaseEntityType;
+use LSB\UtilityBundle\Helper\ValueHelper;
 use LSB\UtilityBundle\Manager\ObjectManagerInterface;
 use LSB\UtilityBundle\Manager\BaseManager;
 use LSB\UtilityBundle\Repository\RepositoryInterface;
@@ -23,18 +24,11 @@ use LSB\UtilityBundle\Repository\RepositoryInterface;
 class PricelistManager extends BaseManager
 {
 
-    /**
-     * PricelistManager constructor.
-     * @param ObjectManagerInterface $objectManager
-     * @param PricelistFactoryInterface $factory
-     * @param PricelistRepositoryInterface $repository
-     * @param BaseEntityType|null $form
-     */
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        PricelistFactoryInterface $factory,
+        ObjectManagerInterface       $objectManager,
+        PricelistFactoryInterface    $factory,
         PricelistRepositoryInterface $repository,
-        ?BaseEntityType $form
+        ?BaseEntityType              $form
     ) {
         parent::__construct($objectManager, $factory, $repository, $form);
     }
@@ -64,17 +58,13 @@ class PricelistManager extends BaseManager
     }
 
     /**
-     * @param ProductInterface $product
-     * @param \DateTime|null $date
-     * @param CurrencyInterface|null $currency
-     * @param ContractorInterface|null $contractor
-     * @return Price|null
+     * @throws \Exception
      */
     public function getPriceForProduct(
-        ProductInterface $product,
-        ?\DateTime $date = null,
-        ?string $positionsPriceType = null,
-        ?CurrencyInterface $currency = null,
+        ProductInterface     $product,
+        ?\DateTime           $date = null,
+        ?string              $positionsPriceType = null,
+        ?CurrencyInterface   $currency = null,
         ?ContractorInterface $contractor = null
     ): ?Price {
 
@@ -87,18 +77,18 @@ class PricelistManager extends BaseManager
             $date->format('Y-m-d'),
             $positionsPriceType,
             $currencyCode,
-            $contractor ? $contractor->getId() : null
+            $contractor?->getId(),
+            ValueHelper::getCurrencyPrecision($currencyCode)
         );
 
         if (!empty($priceResult) && $priceResult[0]['product_id']) {
-
             return new Price(
-                $this->stringToFloat($priceResult[0]['price']),
-                $this->stringToFloat($priceResult[0]['net_price']),
-                $this->stringToFloat($priceResult[0]['gross_price']),
-                $this->stringToFloat($priceResult[0]['base_net_price']),
-                $this->stringToFloat($priceResult[0]['base_gross_price']),
-                $this->stringToFloat($priceResult[0]['vat']),
+                $priceResult[0]['price'],
+                $priceResult[0]['net_price'],
+                $priceResult[0]['gross_price'],
+                $priceResult[0]['base_net_price'],
+                $priceResult[0]['base_gross_price'],
+                $priceResult[0]['vat'],
                 $priceResult[0]['currency_code']
             );
         }
@@ -106,12 +96,4 @@ class PricelistManager extends BaseManager
         return null;
     }
 
-    /**
-     * @param string $price
-     * @return float
-     */
-    public function stringToFloat(string $price): float
-    {
-        return (float)str_replace(",", ".", $price);
-    }
 }

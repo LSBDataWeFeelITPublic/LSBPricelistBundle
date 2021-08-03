@@ -22,72 +22,22 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class TotalCalculatorManager
 {
-    /**
-     * @var string
-     */
-    public const TOTAL_CALCULATOR_TAG_NAME = 'calculator.total';
 
-    /**
-     * @var array
-     */
+    public const TOTAL_CALCULATOR_TAG_NAME = 'calculator.total';
     protected array $totalCalculators = [];
 
-    /**
-     * @var ParameterBagInterface $params
-     */
-    protected ParameterBagInterface $ps;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected EntityManagerInterface $em;
-
-    /**
-     * @var PriceListManager
-     */
-    protected PricelistManager $priceListManager;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected TokenStorageInterface $tokenStorage;
-
-    /**
-     * @var TaxManager
-     */
-    protected TaxManager $taxManager;
-
-    /**
-     * @var CurrencyManager
-     */
-    protected CurrencyManager $currencyManager;
-
     public function __construct(
-        ParameterBagInterface $ps,
-        EntityManagerInterface $em,
-        PriceListManager $priceListManager,
-        EventDispatcherInterface $eventDispatcher,
-        TokenStorageInterface $tokenStorage,
-        TaxManager $taxManager,
-        CurrencyManager $currencyManager
+        protected ParameterBagInterface $ps,
+        protected EntityManagerInterface $em,
+        protected PriceListManager $priceListManager,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected TokenStorageInterface $tokenStorage,
+        protected TaxManager $taxManager,
+        protected CurrencyManager $currencyManager
     ) {
-        $this->ps = $ps;
-        $this->em = $em;
-        $this->priceListManager = $priceListManager;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->tokenStorage = $tokenStorage;
-        $this->taxManager = $taxManager;
-        $this->currencyManager = $currencyManager;
     }
 
     /**
-     * @param TotalCalculatorInterface $totalCalculator
-     * @param array $attrs
      * @throws \Exception
      */
     public function addTotalCalculator(
@@ -108,7 +58,6 @@ class TotalCalculatorManager
     }
 
     /**
-     * @return CurrencyInterface
      * @throws \Exception
      */
     protected function getDefaultCurrency(): CurrencyInterface
@@ -117,9 +66,6 @@ class TotalCalculatorManager
     }
 
     /**
-     * @param $subject
-     * @param string $name
-     * @return TotalCalculatorInterface|null
      * @throws \Exception
      */
     public function getTotalCalculator(
@@ -202,12 +148,6 @@ class TotalCalculatorManager
     }
 
     /**
-     * @param $subject
-     * @param array $options
-     * @param string|null $applicationCode
-     * @param string|null $calculatorName
-     * @param array $calculationRes
-     * @return Result
      * @throws \Exception
      */
     public function calculatePositions(
