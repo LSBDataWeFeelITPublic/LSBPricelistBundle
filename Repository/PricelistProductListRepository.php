@@ -16,11 +16,6 @@ class PricelistProductListRepository extends BaseRepository implements Pricelist
 {
     use PaginationRepositoryTrait;
 
-    /**
-     * PricelistProductListRepository constructor.
-     * @param ManagerRegistry $registry
-     * @param string|null $stringClass
-     */
     public function __construct(ManagerRegistry $registry, ?string $stringClass = null)
     {
         parent::__construct($registry, $stringClass ?? PricelistProductList::class);

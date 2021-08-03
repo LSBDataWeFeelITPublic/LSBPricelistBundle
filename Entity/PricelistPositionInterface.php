@@ -6,6 +6,8 @@ namespace LSB\PricelistBundle\Entity;
 use LSB\ProductBundle\Entity\ProductInterface;
 use LSB\UtilityBundle\Interfaces\IdInterface;
 use LSB\UtilityBundle\Interfaces\PositionInterface;
+use LSB\UtilityBundle\Value\Value;
+use Money\Money;
 
 /**
  * Interface PricelistPositionInterface
@@ -20,19 +22,19 @@ interface PricelistPositionInterface extends IdInterface, PositionInterface
 
     public function setProduct(ProductInterface $product): self;
 
-    public function getPrice(): ?float;
+    public function getPrice(bool $useObject): Money|int|null;
 
-    public function setPrice(?float $price): self;
+    public function setPrice(Money|int|null $price): self;
 
-    public function getDiscount(): ?float;
+    public function getDiscount(bool $useObject): Value|int|null;
 
-    public function setDiscount(?float $discount): self;
+    public function setDiscount(Value|int|null $discount): self;
 
-    public function getVat(): ?float;
+    public function getVat(bool $useObject): Value|int|null;
 
-    public function setVat(?float $vat): self;
+    public function setVat(Value|int|null $vat): self;
 
-    public function getUnit(): ?string;
+    public function getUnit(): string|null;
 
-    public function setUnit(?string $unit): self;
+    public function setUnit(string|null $unit): self;
 }

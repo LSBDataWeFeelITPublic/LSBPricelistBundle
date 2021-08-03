@@ -16,11 +16,6 @@ class PricelistPositionRepository extends BaseRepository implements PricelistPos
 {
     use PaginationRepositoryTrait;
 
-    /**
-     * PricelistPositionRepository constructor.
-     * @param ManagerRegistry $registry
-     * @param string|null $stringClass
-     */
     public function __construct(ManagerRegistry $registry, ?string $stringClass = null)
     {
         parent::__construct($registry, $stringClass ?? PricelistPosition::class);

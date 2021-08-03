@@ -3,10 +3,13 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Entity;
 
+use LSB\UtilityBundle\Helper\ValueHelper;
 use LSB\UtilityBundle\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use LSB\ProductBundle\Entity\ProductInterface;
 use Doctrine\ORM\Mapping\MappedSuperclass;
+use LSB\UtilityBundle\Value\Value;
+use Money\Money;
 
 /**
  * Use this class for joining price results from pricelist_product_list procedure
@@ -27,39 +30,39 @@ class PricelistProductList implements PricelistProductListInterface
     protected ProductInterface $product;
 
     /**
-     * @ORM\Column(type="decimal", nullable=false, scale=2)
+     * @ORM\Column(type="integer", nullable=false)
      */
-    protected float $price;
+    protected int $price;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true, scale=2)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected ?float $discount;
+    protected ?int $discount = null;
 
     /**
-     * @ORM\Column(type="decimal", name="net_price", nullable=true, scale=2)
+     * @ORM\Column(type="integer", name="net_price", nullable=true)
      */
-    protected ?float $netPrice;
+    protected ?int $netPrice = null;
 
     /**
-     * @ORM\Column(type="decimal", name="gross_price", nullable=true, scale=2)
+     * @ORM\Column(type="integer", name="gross_price", nullable=true)
      */
-    protected ?float $grossPrice;
+    protected ?int $grossPrice = null;
 
     /**
-     * @ORM\Column(type="decimal", name="base_price", nullable=true, scale=2)
+     * @ORM\Column(type="integer", name="base_price", nullable=true)
      */
-    protected ?float $basePrice;
+    protected ?int $basePrice = null;
 
     /**
-     * @ORM\Column(type="decimal", name="base_net_price", nullable=true, scale=2)
+     * @ORM\Column(type="integer", name="base_net_price", nullable=true)
      */
-    protected ?float $baseNetPrice;
+    protected ?int $baseNetPrice = null;
 
     /**
-     * @ORM\Column(type="decimal", name="base_gross_price", nullable=true, scale=2)
+     * @ORM\Column(type="integer", name="base_gross_price", nullable=true)
      */
-    protected ?float $baseGrossPrice;
+    protected ?int $baseGrossPrice = null;
 
     /**
      * @ORM\Column(type="boolean", name="is_contractor_price", nullable=true)
@@ -67,9 +70,9 @@ class PricelistProductList implements PricelistProductListInterface
     protected ?bool $isContractorPrice;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true, scale=2)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected ?float $vat;
+    protected ?int $vat = null;
 
     /**
      * @ORM\Column(type="string", name="positions_price_type", nullable=true, length="10")
@@ -81,220 +84,64 @@ class PricelistProductList implements PricelistProductListInterface
      */
     protected ?string $currencyCode;
 
-    /**
-     * @return ProductInterface
-     */
+
     public function getProduct(): ProductInterface
     {
         return $this->product;
     }
 
-    /**
-     * @param ProductInterface $product
-     * @return self
-     */
-    public function setProduct(ProductInterface $product): self
+    public function getPrice(bool $useObject = false): Money|int
     {
-        $this->product = $product;
-        return $this;
+        return $useObject ? ValueHelper::intToMoney($this->price, $this->currencyCode) : $this->price;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrice(): float
+    public function getDiscount(bool $useObject = false): Value|int|null
     {
-        return $this->price;
+        return $useObject ? ValueHelper::intToValue($this->discount, Value::UNIT_PERCENTAGE) : $this->discount;
     }
 
-    /**
-     * @param float $price
-     * @return self
-     */
-    public function setPrice(float $price): self
+    public function getNetPrice(bool $useObject = false): Money|int|null
     {
-        $this->price = $price;
-        return $this;
+        return $useObject ? ValueHelper::intToMoney($this->netPrice, $this->currencyCode) : $this->netPrice;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getDiscount(): ?float
+    public function getGrossPrice(bool $useObject = false): Money|int|null
     {
-        return $this->discount;
+        return $useObject ? ValueHelper::intToMoney($this->grossPrice, $this->currencyCode) : $this->grossPrice;
     }
 
-    /**
-     * @param float|null $discount
-     * @return self
-     */
-    public function setDiscount(?float $discount): self
+    public function getBasePrice(bool $useObject = false): Money|int|null
     {
-        $this->discount = $discount;
-        return $this;
+        return $useObject ? ValueHelper::intToMoney($this->basePrice, $this->currencyCode) : $this->basePrice;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getNetPrice(): ?float
+    public function getBaseNetPrice(bool $useObject = false): Money|int|null
     {
-        return $this->netPrice;
+        return $useObject ? ValueHelper::intToMoney($this->baseNetPrice, $this->currencyCode) : $this->baseNetPrice;
     }
 
-    /**
-     * @param float|null $netPrice
-     * @return self
-     */
-    public function setNetPrice(?float $netPrice): self
+    public function getBaseGrossPrice(bool $useObject = false): Money|int|null
     {
-        $this->netPrice = $netPrice;
-        return $this;
+        return $useObject ? ValueHelper::intToMoney($this->baseGrossPrice, $this->currencyCode) : $this->baseGrossPrice;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getGrossPrice(): ?float
-    {
-        return $this->grossPrice;
-    }
-
-    /**
-     * @param float|null $grossPrice
-     * @return self
-     */
-    public function setGrossPrice(?float $grossPrice): self
-    {
-        $this->grossPrice = $grossPrice;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getBasePrice(): ?float
-    {
-        return $this->basePrice;
-    }
-
-    /**
-     * @param float|null $basePrice
-     * @return self
-     */
-    public function setBasePrice(?float $basePrice): self
-    {
-        $this->basePrice = $basePrice;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getBaseNetPrice(): ?float
-    {
-        return $this->baseNetPrice;
-    }
-
-    /**
-     * @param float|null $baseNetPrice
-     * @return self
-     */
-    public function setBaseNetPrice(?float $baseNetPrice): self
-    {
-        $this->baseNetPrice = $baseNetPrice;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getBaseGrossPrice(): ?float
-    {
-        return $this->baseGrossPrice;
-    }
-
-    /**
-     * @param float|null $baseGrossPrice
-     * @return self
-     */
-    public function setBaseGrossPrice(?float $baseGrossPrice): self
-    {
-        $this->baseGrossPrice = $baseGrossPrice;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getIsContractorPrice(): ?bool
+    public function getIsContractorPrice(): bool|null
     {
         return $this->isContractorPrice;
     }
 
-    /**
-     * @param bool|null $isContractorPrice
-     * @return self
-     */
-    public function setIsContractorPrice(?bool $isContractorPrice): self
+    public function getVat(bool $useObject = false): Value|int|null
     {
-        $this->isContractorPrice = $isContractorPrice;
-        return $this;
+        return $useObject ? ValueHelper::intToValue($this->vat, Value::UNIT_PERCENTAGE) : $this->vat;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getVat(): ?float
-    {
-        return $this->vat;
-    }
-
-    /**
-     * @param float|null $vat
-     * @return self
-     */
-    public function setVat(?float $vat): self
-    {
-        $this->vat = $vat;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPositionsPriceType(): ?string
+    public function getPositionsPriceType(): string|null
     {
         return $this->positionsPriceType;
     }
 
-    /**
-     * @param string|null $positionsPriceType
-     * @return self
-     */
-    public function setPositionsPriceType(?string $positionsPriceType): self
-    {
-        $this->positionsPriceType = $positionsPriceType;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCurrencyCode(): ?string
+    public function getCurrencyCode(): string|null
     {
         return $this->currencyCode;
     }
-
-    /**
-     * @param string|null $currencyCode
-     * @return self
-     */
-    public function setCurrencyCode(?string $currencyCode): self
-    {
-        $this->currencyCode = $currencyCode;
-        return $this;
-    }
-
 }

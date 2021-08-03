@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Entity;
 
+use LSB\UtilityBundle\Helper\ValueHelper;
 use LSB\UtilityBundle\Traits\CreatedUpdatedTrait;
 use LSB\UtilityBundle\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use LSB\UtilityBundle\Value\Value;
+use Money\Money;
 use Symfony\Component\Validator\Constraints as Assert;
 use LSB\ProductBundle\Entity\ProductInterface;
 use LSB\UtilityBundle\Traits\PositionTrait;
@@ -36,25 +39,25 @@ class PricelistPosition implements PricelistPositionInterface
     protected ProductInterface $product;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true, scale=2)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected ?float $price;
+    protected ?int $price = null;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true, scale=2)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected ?float $discount;
+    protected ?int $discount = null;
 
     /**
-     * @ORM\Column(type="decimal", nullable=true, scale=2)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected ?float $vat;
+    protected ?int $vat = null;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
      * @Assert\Length(max=20)
      */
-    protected ?string $unit;
+    protected ?string $unit = null;
 
     /**
      * @return PricelistInterface
@@ -66,9 +69,9 @@ class PricelistPosition implements PricelistPositionInterface
 
     /**
      * @param PricelistInterface $pricelist
-     * @return PricelistPosition
+     * @return $this
      */
-    public function setPricelist(PricelistInterface $pricelist): PricelistPosition
+    public function setPricelist(PricelistInterface $pricelist): self
     {
         $this->pricelist = $pricelist;
         return $this;
@@ -84,64 +87,85 @@ class PricelistPosition implements PricelistPositionInterface
 
     /**
      * @param ProductInterface $product
-     * @return PricelistPosition
+     * @return $this
      */
-    public function setProduct(ProductInterface $product): PricelistPosition
+    public function setProduct(ProductInterface $product): self
     {
         $this->product = $product;
         return $this;
     }
 
     /**
-     * @return float|null
+     * @param bool $useObject
+     * @return Money|int|null
      */
-    public function getPrice(): ?float
+    public function getPrice(bool $useObject = false): Money|int|null
     {
-        return $this->price;
+        return $useObject ? ValueHelper::intToMoney($this->price, $this->pricelist?->getCurrency()?->getIsoCode()) : $this->price;
     }
 
     /**
-     * @param float|null $price
-     * @return PricelistPosition
+     * @param Money|int|null $price
+     * @return $this
      */
-    public function setPrice(?float $price): PricelistPosition
+    public function setPrice(Money|int|null $price): self
     {
+        if ($price instanceof Money) {
+            [$amount, $currency] = ValueHelper::moneyToIntCurrency($price);
+            $this->price = $amount;
+            return $this;
+        }
+
         $this->price = $price;
         return $this;
     }
 
     /**
-     * @return float|null
+     * @param bool $useObject
+     * @return Value|int|null
      */
-    public function getDiscount(): ?float
+    public function getDiscount(bool $useObject = false): Value|int|null
     {
-        return $this->discount;
+        return $useObject ? ValueHelper::intToValue($this->discount, Value::UNIT_PERCENTAGE) : $this->discount;
     }
 
     /**
-     * @param float|null $discount
-     * @return PricelistPosition
+     * @param Value|int|null $discount
+     * @return $this
      */
-    public function setDiscount(?float $discount): PricelistPosition
+    public function setDiscount(Value|int|null $discount): self
     {
+        if ($discount instanceof Value) {
+            [$amount, $unit] = ValueHelper::valueToIntUnit($discount);
+            $this->discount = $amount;
+            return $this;
+        }
+
         $this->discount = $discount;
         return $this;
     }
 
     /**
-     * @return float|null
+     * @param bool $useObject
+     * @return Value|int|null
      */
-    public function getVat(): ?float
+    public function getVat(bool $useObject = false): Value|int|null
     {
-        return $this->vat;
+        return $useObject ? ValueHelper::intToValue($this->vat, Value::UNIT_PERCENTAGE) : $this->vat;
     }
 
     /**
-     * @param float|null $vat
-     * @return PricelistPosition
+     * @param Value|int|null $vat
+     * @return $this
      */
-    public function setVat(?float $vat): PricelistPosition
+    public function setVat(Value|int|null $vat): self
     {
+        if ($vat instanceof Value) {
+            [$amount, $unit] = ValueHelper::valueToIntUnit($vat);
+            $this->vat = $amount;
+            return $this;
+        }
+
         $this->vat = $vat;
         return $this;
     }
@@ -149,19 +173,18 @@ class PricelistPosition implements PricelistPositionInterface
     /**
      * @return string|null
      */
-    public function getUnit(): ?string
+    public function getUnit(): string|null
     {
         return $this->unit;
     }
 
     /**
      * @param string|null $unit
-     * @return PricelistPosition
+     * @return $this
      */
-    public function setUnit(?string $unit): PricelistPosition
+    public function setUnit(string|null $unit): self
     {
         $this->unit = $unit;
         return $this;
     }
-
 }
