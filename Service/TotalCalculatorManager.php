@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\Service;
 
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use LSB\LocaleBundle\Entity\CurrencyInterface;
 use LSB\LocaleBundle\Manager\CurrencyManager;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Class TotalCalculatorManager
  * @package LSB\PricelistBundle\Service
  */
-class TotalCalculatorManager
+class TotalCalculatorManager implements TotalCalculatorManagerInterface
 {
 
     public const TOTAL_CALCULATOR_TAG_NAME = 'calculator.total';
@@ -33,17 +32,19 @@ class TotalCalculatorManager
         protected EventDispatcherInterface $eventDispatcher,
         protected TokenStorageInterface $tokenStorage,
         protected TaxManager $taxManager,
-        protected CurrencyManager $currencyManager
-    ) {
-    }
+        protected CurrencyManager $currencyManager,
+        protected CalculatorModuleInventory $calculatorModuleInventory
+    ) {}
 
     /**
      * @throws \Exception
+     * @deprecated
      */
     public function addTotalCalculator(
         TotalCalculatorInterface $totalCalculator,
         array $attrs = []
     ): void {
+        return;
         $totalCalculator->setAttributes($attrs);
 
         if (!$totalCalculator->getName()) {
@@ -78,30 +79,20 @@ class TotalCalculatorManager
 
         $class = $subject::class;
 
-        dump($class);
-
         if (!$class) {
             throw new \Exception('Subject class name cannot be determined.');
         }
 
-        //Exact class match
-        /** @var string $calculatorSupportedClass */
-        foreach ($this->totalCalculators as $calculatorSupportedClass => $calculators) {
-            if ($calculatorSupportedClass === $class) {
+        $totalCalculator = $this->calculatorModuleInventory->getModuleByName($class, $name, false);
 
-                /** @var TotalCalculatorInterface $totalCalculator*/
-                foreach ($calculators as $calculatorName => $totalCalculator) {
-                    if ($calculatorName === $name) {
-                        $totalCalculator->setTotalCalculatorManager($this);
-                        return $totalCalculator;
-                    }
-                }
-            }
+        if ($totalCalculator instanceof TotalCalculatorInterface) {
+            $totalCalculator->setTotalCalculatorManager($this);
+            return $totalCalculator;
         }
 
         //First implemented
         /** @var string $calculatorSupportedClass */
-        foreach ($this->totalCalculators as $calculatorSupportedClass => $calculators) {
+        foreach ($this->calculatorModuleInventory->getModules() as $calculatorSupportedClass => $calculators) {
             if (is_subclass_of($class, $calculatorSupportedClass)) {
 
                 /** @var TotalCalculatorInterface $totalCalculator*/

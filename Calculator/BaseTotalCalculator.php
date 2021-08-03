@@ -74,6 +74,14 @@ abstract class BaseTotalCalculator implements TotalCalculatorInterface
      */
     public function getName(): string
     {
+        return $this->getSupportedClass();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditionalName(): string
+    {
         return static::NAME;
     }
 

@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace LSB\PricelistBundle\Calculator;
 
 use LSB\PricelistBundle\Service\TotalCalculatorManager;
+use LSB\UtilityBundle\Module\ModuleInterface;
 
 /**
  * Interface TotalCalculatorInterface
  * @package LSB\PricelistBundle\Calculator
  */
-interface TotalCalculatorInterface
+interface TotalCalculatorInterface extends ModuleInterface
 {
     /**
      * @return string

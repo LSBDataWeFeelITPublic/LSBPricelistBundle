@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LSB\PricelistBundle\DependencyInjection\Compiler;
 
+use LSB\PricelistBundle\Service\CalculatorModuleInventory;
 use LSB\PricelistBundle\Service\TotalCalculatorManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,13 +20,13 @@ class AddTotalCalculatorPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(TotalCalculatorManager::class)) {
+        if (!$container->has(CalculatorModuleInventory::class)) {
             return;
         }
 
-        $def = $container->findDefinition(TotalCalculatorManager::class);
+        $def = $container->findDefinition(CalculatorModuleInventory::class);
         foreach ($container->findTaggedServiceIds(TotalCalculatorManager::TOTAL_CALCULATOR_TAG_NAME) as $id => $attrs) {
-            $def->addMethodCall('addTotalCalculator', array(new Reference($id), $attrs));
+            $def->addMethodCall('addModule', array(new Reference($id), $attrs));
         }
     }
 }

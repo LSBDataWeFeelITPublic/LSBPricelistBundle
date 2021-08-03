@@ -22,9 +22,11 @@ use LSB\PricelistBundle\Manager\PricelistProductListManager;
 use LSB\PricelistBundle\Repository\PricelistPositionRepository;
 use LSB\PricelistBundle\Repository\PricelistProductListRepository;
 use LSB\PricelistBundle\Repository\PricelistRepository;
+use LSB\PricelistBundle\Service\TotalCalculatorManager;
+use LSB\PricelistBundle\Service\TotalCalculatorManagerInterface;
 use LSB\UtilityBundle\Config\Definition\Builder\TreeBuilder;
+use LSB\UtilityBundle\Config\Definition\Service\ServicesConfiguration;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use LSB\UtilityBundle\DependencyInjection\BaseExtension as BE;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
@@ -45,6 +47,10 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
             ->children()
+            ->addServicesNodeConfiguration(
+                (new ServicesConfiguration)
+                    ->add(TotalCalculatorManagerInterface::class, TotalCalculatorManager::class)
+            )
             ->arrayNode('defaults')
             ->children()
             ->scalarNode('currencyCode')->end()
@@ -54,7 +60,6 @@ class Configuration implements ConfigurationInterface
             ->bundleTranslationDomainScalar(LSBPriceListBundle::class)->end()
             ->resourcesNode()
             ->children()
-
             //Pricelist
             ->resourceNode(
                 'pricelist',
