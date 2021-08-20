@@ -21,90 +21,22 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class TotalCalculatorManager implements TotalCalculatorManagerInterface
 {
-    /**
-     * @var string
-     */
-    public const TOTAL_CALCULATOR_TAG_NAME = 'calculator.total';
 
-    /**
-     * @var array
-     */
+    public const TOTAL_CALCULATOR_TAG_NAME = 'calculator.total';
     protected array $totalCalculators = [];
 
-    /**
-     * @var ParameterBagInterface $params
-     */
-    protected ParameterBagInterface $ps;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected EntityManagerInterface $em;
-
-    /**
-     * @var PriceListManager
-     */
-    protected PricelistManager $priceListManager;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected TokenStorageInterface $tokenStorage;
-
-    /**
-     * @var TaxManager
-     */
-    protected TaxManager $taxManager;
-
-    /**
-     * @var CurrencyManager
-     */
-    protected CurrencyManager $currencyManager;
-
-    /**
-     * @var CalculatorModuleInventory
-     */
-    protected CalculatorModuleInventory $calculatorModuleInventory;
-
-    /**
-     * TotalCalculatorManager constructor.
-     * @param ParameterBagInterface $ps
-     * @param EntityManagerInterface $em
-     * @param PricelistManager $priceListManager
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param TokenStorageInterface $tokenStorage
-     * @param TaxManager $taxManager
-     * @param CurrencyManager $currencyManager
-     * @param CalculatorModuleInventory $calculatorModuleInventory
-     */
     public function __construct(
-        ParameterBagInterface $ps,
-        EntityManagerInterface $em,
-        PriceListManager $priceListManager,
-        EventDispatcherInterface $eventDispatcher,
-        TokenStorageInterface $tokenStorage,
-        TaxManager $taxManager,
-        CurrencyManager $currencyManager,
-        CalculatorModuleInventory $calculatorModuleInventory
-    ) {
-        $this->ps = $ps;
-        $this->em = $em;
-        $this->priceListManager = $priceListManager;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->tokenStorage = $tokenStorage;
-        $this->taxManager = $taxManager;
-        $this->currencyManager = $currencyManager;
-        $this->calculatorModuleInventory = $calculatorModuleInventory;
-    }
+        protected ParameterBagInterface $ps,
+        protected EntityManagerInterface $em,
+        protected PriceListManager $priceListManager,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected TokenStorageInterface $tokenStorage,
+        protected TaxManager $taxManager,
+        protected CurrencyManager $currencyManager,
+        protected CalculatorModuleInventory $calculatorModuleInventory
+    ) {}
 
     /**
-     * @param TotalCalculatorInterface $totalCalculator
-     * @param array $attrs
      * @throws \Exception
      * @deprecated
      */
@@ -127,7 +59,6 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
     }
 
     /**
-     * @return CurrencyInterface
      * @throws \Exception
      */
     protected function getDefaultCurrency(): CurrencyInterface
@@ -136,9 +67,6 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
     }
 
     /**
-     * @param $subject
-     * @param string $name
-     * @return TotalCalculatorInterface|null
      * @throws \Exception
      */
     public function getTotalCalculator(
@@ -211,12 +139,6 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
     }
 
     /**
-     * @param $subject
-     * @param array $options
-     * @param string|null $applicationCode
-     * @param string|null $calculatorName
-     * @param array $calculationRes
-     * @return Result
      * @throws \Exception
      */
     public function calculatePositions(

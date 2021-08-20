@@ -73,7 +73,6 @@ class Pricelist implements PricelistInterface
     protected Collection $pricelistPositions;
 
     /**
-     * Pricelist constructor.
      * @throws \Exception
      */
     public function __construct()
@@ -94,144 +93,88 @@ class Pricelist implements PricelistInterface
         $this->generateUuid($force = true);
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->isEnabled;
     }
 
-    /**
-     * @param bool $isEnabled
-     * @return Pricelist
-     */
     public function setIsEnabled(bool $isEnabled): Pricelist
     {
         $this->isEnabled = $isEnabled;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return Pricelist
-     */
     public function setName(?string $name): Pricelist
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return ContractorInterface|null
-     */
     public function getContractor(): ?ContractorInterface
     {
         return $this->contractor;
     }
 
-    /**
-     * @param ContractorInterface|null $contractor
-     * @return Pricelist
-     */
     public function setContractor(?ContractorInterface $contractor): Pricelist
     {
         $this->contractor = $contractor;
         return $this;
     }
 
-    /**
-     * @return CurrencyInterface
-     */
     public function getCurrency(): CurrencyInterface
     {
         return $this->currency;
     }
 
-    /**
-     * @param CurrencyInterface $currency
-     * @return Pricelist
-     */
     public function setCurrency(CurrencyInterface $currency): Pricelist
     {
         $this->currency = $currency;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPositionsPriceType(): string
     {
         return $this->positionsPriceType;
     }
 
-    /**
-     * @param string $positionsPriceType
-     * @return Pricelist
-     */
     public function setPositionsPriceType(string $positionsPriceType): Pricelist
     {
         $this->positionsPriceType = $positionsPriceType;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getDateFrom(): ?\DateTime
     {
         return $this->dateFrom;
     }
 
-    /**
-     * @param \DateTime|null $dateFrom
-     * @return Pricelist
-     */
     public function setDateFrom(?\DateTime $dateFrom): Pricelist
     {
         $this->dateFrom = $dateFrom;
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getDateTo(): ?\DateTime
     {
         return $this->dateTo;
     }
 
-    /**
-     * @param \DateTime|null $dateTo
-     * @return Pricelist
-     */
     public function setDateTo(?\DateTime $dateTo): Pricelist
     {
         $this->dateTo = $dateTo;
         return $this;
     }
 
-    /**
-     * @return Collection|PricelistPositionInterface[]
-     */
     public function getPricelistPositions(): Collection
     {
         return $this->pricelistPositions;
     }
 
-    /**
-     * @param Collection|PricelistPositionInterface[] $pricelistPositions
-     * @return Pricelist
-     */
     public function setPricelistPositions(Collection $pricelistPositions): Pricelist
     {
         $this->pricelistPositions = $pricelistPositions;

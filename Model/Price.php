@@ -1,38 +1,40 @@
 <?php
 declare(strict_types=1);
 
-
 namespace LSB\PricelistBundle\Model;
 
 
+use LSB\UtilityBundle\Helper\ValueHelper;
+use LSB\UtilityBundle\Value\Value;
+use Money\Money;
+
 class Price
 {
-    protected ?float $price;
-    protected ?float $netPrice;
-    protected ?float $grossPrice;
-    protected ?float $baseNetPrice;
-    protected ?float $baseGrossPrice;
-    protected ?float $vat;
-    protected ?string $currencyCode;
+    protected ?int $price = null;
+    protected ?int $netPrice = null;
+    protected ?int $grossPrice = null;
+    protected ?int $baseNetPrice = null;
+    protected ?int $baseGrossPrice = null;
+    protected ?int $vat = null;
+    protected ?string $currencyIsoCode = null;
 
     /**
-     * Price constructor.
-     * @param float|null $price
-     * @param float|null $netPrice
-     * @param float|null $grossPrice
-     * @param float|null $baseNetPrice
-     * @param float|null $baseGrossPrice
-     * @param float|null $vat
-     * @param string|null $currencyCode
+     * @param int|null $price
+     * @param int|null $netPrice
+     * @param int|null $grossPrice
+     * @param int|null $baseNetPrice
+     * @param int|null $baseGrossPrice
+     * @param int|null $vat
+     * @param string|null $currencyIsoCode
      */
     public function __construct(
-        ?float $price,
-        ?float $netPrice,
-        ?float $grossPrice,
-        ?float $baseNetPrice,
-        ?float $baseGrossPrice,
-        ?float $vat,
-        ?string $currencyCode
+        ?int    $price,
+        ?int    $netPrice,
+        ?int    $grossPrice,
+        ?int    $baseNetPrice,
+        ?int    $baseGrossPrice,
+        ?int    $vat,
+        ?string $currencyIsoCode
     ) {
         $this->price = $price;
         $this->netPrice = $netPrice;
@@ -40,64 +42,69 @@ class Price
         $this->baseNetPrice = $baseNetPrice;
         $this->baseGrossPrice = $baseGrossPrice;
         $this->vat = $vat;
-        $this->currencyCode = $currencyCode;
+        $this->currencyIsoCode = $currencyIsoCode;
     }
 
     /**
-     * @return float|null
+     * @param bool $useMoney
+     * @return Money|int|null
      */
-    public function getPrice(): ?float
+    public function getPrice(bool $useMoney = false): Money|int|null
     {
-        return $this->price;
+        return $useMoney ? ValueHelper::intToMoney($this->price, $this->currencyIsoCode) : $this->price;
     }
 
     /**
-     * @return float|null
+     * @param bool $useMoney
+     * @return Money|int|null
      */
-    public function getNetPrice(): ?float
+    public function getNetPrice(bool $useMoney = false): Money|int|null
     {
-        return $this->netPrice;
+        return $useMoney ? ValueHelper::intToMoney($this->netPrice, $this->currencyIsoCode) : $this->netPrice;
     }
 
     /**
-     * @return float|null
+     * @param bool $useMoney
+     * @return Money|int|null
      */
-    public function getGrossPrice(): ?float
+    public function getGrossPrice(bool $useMoney = false): Money|int|null
     {
-        return $this->grossPrice;
+        return $useMoney ? ValueHelper::intToMoney($this->grossPrice, $this->currencyIsoCode) : $this->grossPrice;
     }
 
     /**
-     * @return float|null
+     * @param bool $useMoney
+     * @return Money|int|null
      */
-    public function getBaseNetPrice(): ?float
+    public function getBaseNetPrice(bool $useMoney = false): Money|int|null
     {
-        return $this->baseNetPrice;
-    }
-    
-    /**
-     * @return float|null
-     */
-    public function getBaseGrossPrice(): ?float
-    {
-        return $this->baseGrossPrice;
+        return $useMoney ? ValueHelper::intToMoney($this->baseNetPrice, $this->currencyIsoCode) : $this->baseNetPrice;
     }
 
     /**
-     * @return float|null
+     * @param bool $useMoney
+     * @return Money|int|null
      */
-    public function getVat(): ?float
+    public function getBaseGrossPrice(bool $useMoney = false): Money|int|null
     {
-        return $this->vat;
+        return $useMoney ? ValueHelper::intToMoney($this->baseGrossPrice, $this->currencyIsoCode) : $this->baseGrossPrice;
+    }
+
+    /**
+     * @param bool $useValue
+     * @return Value|int|null
+     */
+    public function getVat(bool $useValue = false): Value|int|null
+    {
+        return $useValue ? ValueHelper::intToValue($this->vat, Value::UNIT_PERCENTAGE) : $this->vat;
     }
 
     /**
      * @return string|null
      */
-    public function getCurrencyCode(): ?string
+    public function getCurrencyIsoCode(): ?string
     {
-        return $this->currencyCode;
+        return $this->currencyIsoCode;
     }
-
 
 }

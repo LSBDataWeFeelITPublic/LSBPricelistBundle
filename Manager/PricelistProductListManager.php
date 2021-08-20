@@ -13,24 +13,17 @@ use LSB\UtilityBundle\Manager\BaseManager;
 use LSB\UtilityBundle\Repository\RepositoryInterface;
 
 /**
-* Class PricelistProductListManager
-* @package LSB\PricelistBundle\Manager
-*/
+ * Class PricelistProductListManager
+ * @package LSB\PricelistBundle\Manager
+ */
 class PricelistProductListManager extends BaseManager
 {
-
-    /**
-     * PricelistProductListManager constructor.
-     * @param ObjectManagerInterface $objectManager
-     * @param PricelistProductListFactoryInterface $factory
-     * @param PricelistProductListRepositoryInterface $repository
-     * @param BaseEntityType|null $form
-     */
+    
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        PricelistProductListFactoryInterface $factory,
+        ObjectManagerInterface                  $objectManager,
+        PricelistProductListFactoryInterface    $factory,
         PricelistProductListRepositoryInterface $repository,
-        ?BaseEntityType $form
+        ?BaseEntityType                         $form
     ) {
         parent::__construct($objectManager, $factory, $repository, $form);
     }

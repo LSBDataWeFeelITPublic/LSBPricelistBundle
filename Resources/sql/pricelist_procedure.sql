@@ -1,6 +1,6 @@
-DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, varchar(10), varchar(20), integer);
-DROP FUNCTION IF EXISTS pricelist_product_list(date, varchar(10), varchar(20), integer);
-DROP FUNCTION IF EXISTS get_base_pricelist_position(integer, date, varchar(10), varchar(20));
+DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, varchar(10), varchar(20), integer, integer);
+DROP FUNCTION IF EXISTS pricelist_product_list(date, varchar(10), varchar(20), integer, integer);
+DROP FUNCTION IF EXISTS get_base_pricelist_position(integer, date, varchar(10), varchar(20), integer);
 
 DROP TYPE IF EXISTS price;
 DROP TYPE IF EXISTS basePrice;
@@ -10,15 +10,15 @@ CREATE TYPE price AS
 (
     id                   integer,
     product_id           integer,
-    price                numeric,
-    discount             numeric,
-    net_price            numeric,
-    gross_price          numeric,
-    base_price           numeric,
-    base_net_price       numeric,
-    base_gross_price     numeric,
+    price                integer,
+    discount             integer,
+    net_price            integer,
+    gross_price          integer,
+    base_price           integer,
+    base_net_price       integer,
+    base_gross_price     integer,
     is_contractor_price  boolean,
-    vat                  numeric,
+    vat                  integer,
     positions_price_type varchar(10),
     currency_code        varchar(20)
 );
@@ -26,10 +26,10 @@ CREATE TYPE price AS
 CREATE TYPE basePrice AS
 (
     product_id           integer,
-    base_price           numeric,
-    base_net_price       numeric,
-    base_gross_price     numeric,
-    vat                  numeric,
+    base_price           integer,
+    base_net_price       integer,
+    base_gross_price     integer,
+    vat                  integer,
     positions_price_type varchar(10),
     currency_code        varchar(20)
 );
@@ -37,17 +37,17 @@ CREATE TYPE basePrice AS
 -- helper type
 CREATE TYPE netGrossPrice AS
 (
-    net_price   numeric,
-    gross_price numeric
+    net_price   integer,
+    gross_price integer
 );
 
-
--- USAGE: SELECT * FROM pricelist_product_price(_product_id, _date, _positions_price_type, _currency_code, _contractor_id)
+-- USAGE: SELECT * FROM pricelist_product_price(_product_id, _date, _positions_price_type, _currency_code, _contractor_id, _precision)
 CREATE OR REPLACE FUNCTION pricelist_product_price(_product_id integer,
                                                    _date date,
                                                    _positions_price_type varchar(10),
                                                    _currency_code varchar(20),
-                                                   _contractor_id integer)
+                                                   _contractor_id integer,
+                                                   _precision integer DEFAULT 2)
     RETURNS price AS
 $BODY$
 
@@ -57,7 +57,10 @@ DECLARE
     netGrossPrice   netGrossPrice;
     baseFOUND       bool;
     contractorFOUND bool;
+    precisionFactor integer;
 BEGIN
+
+    precisionFactor := 100 * power(10, _precision)::integer;
 
     -- check base pricelist
     SELECT bp.product_id,
@@ -68,7 +71,7 @@ BEGIN
            bp.positions_price_type,
            bp.currency_code
     INTO base
-    FROM get_base_pricelist_position(_product_id, _date, _positions_price_type, _currency_code) as bp;
+    FROM get_base_pricelist_position(_product_id, _date, _positions_price_type, _currency_code, _precision) as bp;
 
     baseFOUND := FOUND;
 
@@ -130,14 +133,14 @@ BEGIN
 
         -- if price not present and discount is, calculate price based on basePrice and discount
         if rec.price is null and rec.discount is not null and base.base_price is not null then
-            rec.price := base.base_price - (base.base_price * rec.discount / 100);
+            rec.price := base.base_price - (base.base_price * rec.discount / precisionFactor);
         end if;
 
         -- calculate net/gross price
 
         -- aktualizacja netto/brutto
-        SELECT round((CASE WHEN rec.positions_price_type = 'net' THEN rec.price ELSE (rec.price / (((rec.vat::float / 100) + 1))) END)::numeric, 2)   net_price,
-               round((CASE WHEN rec.positions_price_type = 'gross' THEN rec.price ELSE (rec.price * (((rec.vat::float / 100) + 1))) END)::numeric, 2) gross_price
+        SELECT (CASE WHEN rec.positions_price_type = 'net' THEN rec.price ELSE (rec.price / (((rec.vat / precisionFactor) + 1))) END)   net_price,
+               (CASE WHEN rec.positions_price_type = 'gross' THEN rec.price ELSE (rec.price * (((rec.vat / precisionFactor) + 1))) END) gross_price
         INTO netGrossPrice;
         --FROM app_product p
         --WHERE p.id = rec.productID;
@@ -160,11 +163,12 @@ $BODY$
     COST 100;
 
 
--- USAGE: SELECT pricelist_product_list(_date, _positions_price_type, _currency_code, _contractor_id)
+-- USAGE: SELECT pricelist_product_list(_date, _positions_price_type, _currency_code, _contractor_id, _precision)
 CREATE OR REPLACE FUNCTION pricelist_product_list(_date date,
                                                   _positions_price_type varchar(10),
                                                   _currency_code varchar(20),
-                                                  _contractor_id integer)
+                                                  _contractor_id integer,
+                                                  _precision integer DEFAULT 2)
     RETURNS boolean AS
 $BODY$
 
@@ -197,7 +201,7 @@ BEGIN
         select distinct plp.product_id from app_pricelist_position plp
         LOOP
             -- RAISE NOTICE 'LOOP % - %', last_id, customer;
-            rec := pricelist_product_price(r.product_id, _date, _positions_price_type, _currency_code, _contractor_id);
+            rec := pricelist_product_price(r.product_id, _date, _positions_price_type, _currency_code, _contractor_id, _precision);
             if rec.product_id is not null then
                 last_id := last_id + 1;
                 rec.id := last_id;
@@ -216,8 +220,14 @@ $BODY$
 
 
 
--- USAGE: SELECT * FROM get_base_pricelist_position(_product_id, _date, _positions_price_type, _currency_code)
-CREATE OR REPLACE FUNCTION public.get_base_pricelist_position(_product_id integer, _date date, _positions_price_type varchar(10), _currency_code varchar(20))
+-- USAGE: SELECT * FROM get_base_pricelist_position(_product_id, _date, _positions_price_type, _currency_code, _precision)
+CREATE OR REPLACE FUNCTION public.get_base_pricelist_position(
+    _product_id integer,
+    _date date,
+    _positions_price_type varchar(10),
+    _currency_code varchar(20),
+    _precision integer DEFAULT 2
+)
     RETURNS
         TABLE
         (
@@ -234,14 +244,17 @@ CREATE OR REPLACE FUNCTION public.get_base_pricelist_position(_product_id intege
 AS
 $BODY$
 DECLARE
+    precisionFactor integer;
 BEGIN
+    precisionFactor := 100 * power(10, _precision)::integer;
+
     RETURN QUERY
         SELECT prod.id,
                pl.id,
                plp.id,
                plp.price,
-               round((CASE WHEN _positions_price_type = 'net' THEN plp.price ELSE (plp.price / (((plp.vat::float / 100) + 1))) END)::numeric, 2)   as net_base_price,
-               round((CASE WHEN _positions_price_type = 'gross' THEN plp.price ELSE (plp.price * (((plp.vat::float / 100) + 1))) END)::numeric, 2) as gross_base_price,
+               (CASE WHEN _positions_price_type = 'net' THEN plp.price ELSE (plp.price / (((plp.vat / precisionFactor) + 1))) END)   as net_base_price,
+               (CASE WHEN _positions_price_type = 'gross' THEN plp.price ELSE (plp.price * (((plp.vat / precisionFactor) + 1))) END) as gross_base_price,
                plp.vat,
                pl.positions_price_type,
                cr.iso_code

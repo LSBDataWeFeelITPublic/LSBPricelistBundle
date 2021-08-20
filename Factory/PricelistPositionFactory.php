@@ -13,9 +13,6 @@ use LSB\UtilityBundle\Factory\BaseFactory;
 class PricelistPositionFactory extends BaseFactory implements PricelistPositionFactoryInterface
 {
 
-    /**
-     * @return PricelistPositionInterface
-     */
     public function createNew(): PricelistPositionInterface
     {
         return parent::createNew();

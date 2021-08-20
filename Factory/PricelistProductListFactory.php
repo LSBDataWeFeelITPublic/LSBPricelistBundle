@@ -13,9 +13,6 @@ use LSB\UtilityBundle\Factory\BaseFactory;
 class PricelistProductListFactory extends BaseFactory implements PricelistProductListFactoryInterface
 {
 
-    /**
-     * @return PricelistProductListInterface
-     */
     public function createNew(): PricelistProductListInterface
     {
         return parent::createNew();
