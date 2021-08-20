@@ -1,3 +1,7 @@
+DROP FUNCTION IF EXISTS pricelist_product_price(integer,date,character varying,character varying,integer);
+DROP FUNCTION IF EXISTS pricelist_product_list(date,character varying,character varying,integer);
+DROP FUNCTION IF EXISTS get_base_pricelist_position(integer,date,character varying,character varying);
+
 DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, varchar(10), varchar(20), integer, integer);
 DROP FUNCTION IF EXISTS pricelist_product_list(date, varchar(10), varchar(20), integer, integer);
 DROP FUNCTION IF EXISTS get_base_pricelist_position(integer, date, varchar(10), varchar(20), integer);
@@ -234,10 +238,10 @@ CREATE OR REPLACE FUNCTION public.get_base_pricelist_position(
             product_id            integer,
             pricelist_id          integer,
             pricelist_position_id integer,
-            price                 numeric,
-            base_net_price        numeric,
-            base_gross_price      numeric,
-            vat                   numeric,
+            price                 integer,
+            base_net_price        integer,
+            base_gross_price      integer,
+            vat                   integer,
             positions_price_type  varchar(10),
             currency_code         varchar(20)
         )
