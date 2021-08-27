@@ -16,6 +16,7 @@ use LSB\UtilityBundle\Helper\ValueHelper;
 use LSB\UtilityBundle\Manager\ObjectManagerInterface;
 use LSB\UtilityBundle\Manager\BaseManager;
 use LSB\UtilityBundle\Repository\RepositoryInterface;
+use LSB\UtilityBundle\Value\Value;
 
 /**
  * Class PricelistManager
@@ -65,12 +66,14 @@ class PricelistManager extends BaseManager
         ?\DateTime           $date = null,
         ?string              $positionsPriceType = null,
         ?CurrencyInterface   $currency = null,
-        ?ContractorInterface $contractor = null
+        ?ContractorInterface $contractor = null,
+        ?Value               $quantity = null
     ): ?Price {
 
         $date = $date ?? new \DateTime();
         $currencyCode = $currency ? $currency->getIsoCode() : $this->getBundleConfiguration()['defaults']['currencyCode'];
         $positionsPriceType = $positionsPriceType ?? $this->getBundleConfiguration()['defaults']['positionsPriceType'];
+        $quantity = is_null($quantity) ? null : (int) $quantity->getAmount();
 
         $priceResult = $this->getRepository()->pricelistProcedureProduct(
             $product->getId(),
