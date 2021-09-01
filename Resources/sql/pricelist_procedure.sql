@@ -1,6 +1,6 @@
-DROP FUNCTION IF EXISTS pricelist_product_price(integer,date,character varying,character varying,integer);
-DROP FUNCTION IF EXISTS pricelist_product_list(date,character varying,character varying,integer);
-DROP FUNCTION IF EXISTS get_base_pricelist_position(integer,date,character varying,character varying);
+DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, character varying, character varying, integer);
+DROP FUNCTION IF EXISTS pricelist_product_list(date, character varying, character varying, integer);
+DROP FUNCTION IF EXISTS get_base_pricelist_position(integer, date, character varying, character varying);
 
 DROP FUNCTION IF EXISTS pricelist_product_price(integer, date, varchar(10), varchar(20), integer, integer);
 DROP FUNCTION IF EXISTS pricelist_product_list(date, varchar(10), varchar(20), integer, integer);
@@ -98,10 +98,10 @@ BEGIN
                pl.positions_price_type,
                cr.iso_code
         INTO rec
-        FROM app_pricelist_position plp
-                 JOIN app_pricelist pl ON pl.id = plp.pricelist_id
-                 JOIN app_product prod ON prod.id = plp.product_id
-                 JOIN app_currency cr ON cr.id = pl.currency_id
+        FROM pricelist_app_pricelist_position plp
+                 JOIN pricelist_app_pricelist pl ON pl.id = plp.pricelist_id
+                 JOIN pricelist_app_product prod ON prod.id = plp.product_id
+                 JOIN pricelist_app_currency cr ON cr.id = pl.currency_id
         WHERE pl.is_enabled = TRUE
           AND pl.contractor_id = _contractor_id
           AND cr.iso_code = _currency_code
@@ -137,17 +137,13 @@ BEGIN
 
         -- if price not present and discount is, calculate price based on basePrice and discount
         if rec.price is null and rec.discount is not null and base.base_price is not null then
-            rec.price := base.base_price - (base.base_price * rec.discount / precisionFactor);
+            rec.price := ROUND(base.base_price - (base.base_price * rec.discount / precisionFactor::numeric))::integer;
         end if;
 
         -- calculate net/gross price
-
-        -- aktualizacja netto/brutto
-        SELECT (CASE WHEN rec.positions_price_type = 'net' THEN rec.price ELSE (rec.price / (((rec.vat / precisionFactor) + 1))) END)   net_price,
-               (CASE WHEN rec.positions_price_type = 'gross' THEN rec.price ELSE (rec.price * (((rec.vat / precisionFactor) + 1))) END) gross_price
+        SELECT ROUND((CASE WHEN rec.positions_price_type = 'net' THEN rec.price ELSE (rec.price / (((rec.vat / precisionFactor::numeric) + 1))) END))::integer   net_price,
+               ROUND((CASE WHEN rec.positions_price_type = 'gross' THEN rec.price ELSE (rec.price * (((rec.vat / precisionFactor::numeric) + 1))) END))::integer gross_price
         INTO netGrossPrice;
-        --FROM app_product p
-        --WHERE p.id = rec.productID;
 
         rec.net_price := netGrossPrice.net_price;
         rec.gross_price := netGrossPrice.gross_price;
@@ -182,7 +178,7 @@ DECLARE
     last_id integer := 0;
 BEGIN
 
-    CREATE TEMP TABLE IF NOT EXISTS app_pricelist_product_list
+    CREATE TEMP TABLE IF NOT EXISTS pricelist_app_pricelist_product_list
     (
         id                   serial NOT NULL,
         product_id           integer,
@@ -197,19 +193,19 @@ BEGIN
         vat                  numeric,
         positions_price_type varchar(10),
         currency_code        varchar(20),
-        CONSTRAINT app_pricelist_product_list_pkey PRIMARY KEY (id)
+        CONSTRAINT pricelist_app_pricelist_product_list_pkey PRIMARY KEY (id)
     );
-    truncate app_pricelist_product_list;
+    truncate pricelist_app_pricelist_product_list;
 
     FOR r IN
-        select distinct plp.product_id from app_pricelist_position plp
+        select distinct plp.product_id from pricelist_app_pricelist_position plp
         LOOP
             -- RAISE NOTICE 'LOOP % - %', last_id, customer;
             rec := pricelist_product_price(r.product_id, _date, _positions_price_type, _currency_code, _contractor_id, _precision);
             if rec.product_id is not null then
                 last_id := last_id + 1;
                 rec.id := last_id;
-                insert into app_pricelist_product_list values (rec.*);
+                insert into pricelist_app_pricelist_product_list values (rec.*);
             END IF;
         END LOOP;
 
@@ -257,15 +253,15 @@ BEGIN
                pl.id,
                plp.id,
                plp.price,
-               (CASE WHEN _positions_price_type = 'net' THEN plp.price ELSE (plp.price / (((plp.vat / precisionFactor) + 1))) END)   as net_base_price,
-               (CASE WHEN _positions_price_type = 'gross' THEN plp.price ELSE (plp.price * (((plp.vat / precisionFactor) + 1))) END) as gross_base_price,
+               ROUND((CASE WHEN _positions_price_type = 'net' THEN plp.price ELSE (plp.price / (((plp.vat / precisionFactor::numeric) + 1))) END))::integer   as net_base_price,
+               ROUND((CASE WHEN _positions_price_type = 'gross' THEN plp.price ELSE (plp.price * (((plp.vat / precisionFactor::numeric) + 1))) END))::integer as gross_base_price,
                plp.vat,
                pl.positions_price_type,
                cr.iso_code
-        FROM app_pricelist_position plp
-                 JOIN app_pricelist pl ON pl.id = plp.pricelist_id
-                 JOIN app_product prod ON prod.id = plp.product_id
-                 JOIN app_currency cr ON cr.id = pl.currency_id
+        FROM pricelist_app_pricelist_position plp
+                 JOIN pricelist_app_pricelist pl ON pl.id = plp.pricelist_id
+                 JOIN pricelist_app_product prod ON prod.id = plp.product_id
+                 JOIN pricelist_app_currency cr ON cr.id = pl.currency_id
         WHERE pl.is_enabled = TRUE
           AND pl.contractor_id IS NULL
           AND cr.iso_code = _currency_code
