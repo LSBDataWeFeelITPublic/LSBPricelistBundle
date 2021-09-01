@@ -100,8 +100,8 @@ BEGIN
         INTO rec
         FROM pricelist_app_pricelist_position plp
                  JOIN pricelist_app_pricelist pl ON pl.id = plp.pricelist_id
-                 JOIN pricelist_app_product prod ON prod.id = plp.product_id
-                 JOIN pricelist_app_currency cr ON cr.id = pl.currency_id
+                 JOIN product_app_product prod ON prod.id = plp.product_id
+                 JOIN locale_app_currency cr ON cr.id = pl.currency_id
         WHERE pl.is_enabled = TRUE
           AND pl.contractor_id = _contractor_id
           AND cr.iso_code = _currency_code
@@ -260,8 +260,8 @@ BEGIN
                cr.iso_code
         FROM pricelist_app_pricelist_position plp
                  JOIN pricelist_app_pricelist pl ON pl.id = plp.pricelist_id
-                 JOIN pricelist_app_product prod ON prod.id = plp.product_id
-                 JOIN pricelist_app_currency cr ON cr.id = pl.currency_id
+                 JOIN product_app_product prod ON prod.id = plp.product_id
+                 JOIN locale_app_currency cr ON cr.id = pl.currency_id
         WHERE pl.is_enabled = TRUE
           AND pl.contractor_id IS NULL
           AND cr.iso_code = _currency_code
