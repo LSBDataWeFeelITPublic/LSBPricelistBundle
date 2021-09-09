@@ -57,6 +57,11 @@ class Result
     protected array $calculationPaymentCostRes;
 
     /**
+     * @var object|null
+     */
+    protected ?object $resultObject;
+
+    /**
      * Result constructor.
      * @param bool $isSuccess
      * @param CurrencyInterface|null $currency
@@ -67,6 +72,7 @@ class Result
      * @param array $calculationProductRes
      * @param array $calculationShippingRes
      * @param array $calculationPaymentCostRes
+     * @param object|null $resultObject
      */
     public function __construct(
         bool $isSuccess,
@@ -77,7 +83,8 @@ class Result
         array &$calculationRes = [],
         array &$calculationProductRes = [],
         array &$calculationShippingRes = [],
-        array &$calculationPaymentCostRes = []
+        array &$calculationPaymentCostRes = [],
+        ?object $resultObject = null
     ) {
         $this->isSuccess = $isSuccess;
         $this->currency = $currency;
@@ -88,6 +95,7 @@ class Result
         $this->calculationProductRes = $calculationProductRes;
         $this->calculationShippingRes = $calculationShippingRes;
         $this->calculationPaymentCostRes = $calculationPaymentCostRes;
+        $this->resultObject = $resultObject;
     }
 
     /**
@@ -249,6 +257,24 @@ class Result
     public function setCalculationPaymentCostRes(array $calculationPaymentCostRes): Result
     {
         $this->calculationPaymentCostRes = $calculationPaymentCostRes;
+        return $this;
+    }
+
+    /**
+     * @return object|null
+     */
+    public function getResultObject(): ?object
+    {
+        return $this->resultObject;
+    }
+
+    /**
+     * @param object|null $resultObject
+     * @return Result
+     */
+    public function setResultObject(?object $resultObject): Result
+    {
+        $this->resultObject = $resultObject;
         return $this;
     }
 }

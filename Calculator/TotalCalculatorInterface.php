@@ -65,8 +65,8 @@ interface TotalCalculatorInterface extends ModuleInterface
      */
     public function calculateTotal(
         $subject,
-        array $options,
-        ?string $applicationCode,
+        array $options = [],
+        ?string $applicationCode = null,
         bool $updateSubject = true,
         bool $updatePositions = true,
         array &$calculationRes = []
