@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace LSB\PricelistBundle\Calculator;
 
 use LSB\LocaleBundle\Entity\CurrencyInterface;
+use Money\Money;
 
 /**
  * Class Result
@@ -17,14 +18,14 @@ class Result
     protected ?CurrencyInterface $currency;
 
     /**
-     * @var float
+     * @var Money|null
      */
-    protected float $totalNet;
+    protected ?Money $totalNet;
 
     /**
-     * @var float
+     * @var Money|null
      */
-    protected float $totalGross;
+    protected ?Money $totalGross;
 
     /**
      * @var bool
@@ -65,8 +66,8 @@ class Result
      * Result constructor.
      * @param bool $isSuccess
      * @param CurrencyInterface|null $currency
-     * @param float $totalNet
-     * @param float $totalGross
+     * @param Money|null $totalNet
+     * @param Money|null $totalGross
      * @param null $subject
      * @param array $calculationRes
      * @param array $calculationProductRes
@@ -77,8 +78,8 @@ class Result
     public function __construct(
         bool $isSuccess,
         ?CurrencyInterface $currency,
-        float $totalNet,
-        float $totalGross,
+        ?Money $totalNet,
+        ?Money $totalGross,
         $subject = null,
         array &$calculationRes = [],
         array &$calculationProductRes = [],
@@ -117,36 +118,36 @@ class Result
     }
 
     /**
-     * @return float
+     * @return Money|null
      */
-    public function getTotalNet(): float
+    public function getTotalNet(): ?Money
     {
         return $this->totalNet;
     }
 
     /**
-     * @param float $totalNet
+     * @param Money|null $totalNet
      * @return Result
      */
-    public function setTotalNet(float $totalNet): Result
+    public function setTotalNet(?Money $totalNet): Result
     {
         $this->totalNet = $totalNet;
         return $this;
     }
 
     /**
-     * @return float
+     * @return Money|null
      */
-    public function getTotalGross(): float
+    public function getTotalGross(): ?Money
     {
         return $this->totalGross;
     }
 
     /**
-     * @param float $totalGross
+     * @param Money|null $totalGross
      * @return Result
      */
-    public function setTotalGross(float $totalGross): Result
+    public function setTotalGross(?Money $totalGross): Result
     {
         $this->totalGross = $totalGross;
         return $this;

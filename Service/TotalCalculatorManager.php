@@ -11,6 +11,7 @@ use LSB\PricelistBundle\Calculator\BaseTotalCalculator;
 use LSB\PricelistBundle\Calculator\Result;
 use LSB\PricelistBundle\Calculator\TotalCalculatorInterface;
 use LSB\PricelistBundle\Manager\PricelistManager;
+use LSB\UtilityBundle\Helper\ValueHelper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -132,7 +133,7 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
                 $calculationRes
             );
         } catch (\Exception $e) {
-            $result = new Result(false, $this->getDefaultCurrency(), 0, 0);
+            $result = new Result(false, $this->getDefaultCurrency(), null, null);
         }
 
         return $result;
