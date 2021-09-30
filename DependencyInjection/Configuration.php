@@ -58,13 +58,13 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('positionsPriceType')->defaultValue(Pricelist::POSITIONS_PRICE_TYPE_NET)->cannotBeEmpty()->end()
             ->end()
             ->end()
-            ->bundleTranslationDomainScalar(LSBPriceListBundle::class)->end()
+            ->bundleTranslationDomainScalar(LSBPricelistBundle::class)->end()
             ->resourcesNode()
             ->children()
             //Pricelist
             ->resourceNode(
                 'pricelist',
-                PriceList::class,
+                Pricelist::class,
                 PricelistInterface::class,
                 PricelistFactory::class,
                 PricelistRepository::class,
@@ -76,7 +76,7 @@ class Configuration implements ConfigurationInterface
             //Pricelist position
             ->resourceNode(
                 'pricelist_position',
-                PriceListPosition::class,
+                PricelistPosition::class,
                 PricelistPositionInterface::class,
                 PricelistPositionFactory::class,
                 PricelistPositionRepository::class,
