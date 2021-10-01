@@ -68,7 +68,7 @@ class Pricelist implements PricelistInterface
 
     /**
      * @var Collection|PricelistPositionInterface[]
-     * @ORM\OneToMany(targetEntity="LSB\PricelistBundle\Entity\PricelistPositionInterface", mappedBy="pricelist")
+     * @ORM\OneToMany(targetEntity="LSB\PricelistBundle\Entity\PricelistPositionInterface", mappedBy="pricelist", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected Collection $pricelistPositions;
 
