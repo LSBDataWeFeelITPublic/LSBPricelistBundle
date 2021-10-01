@@ -165,7 +165,7 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
             );
 
         } catch (\Exception $e) {
-            $result = new Result(false, $this->getDefaultCurrency(), 0, 0);
+            $result = new Result(false, $this->getDefaultCurrency(), null, null);
         }
 
         return $result;
