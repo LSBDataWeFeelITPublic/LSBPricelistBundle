@@ -29,7 +29,7 @@ class TotalCalculatorManager implements TotalCalculatorManagerInterface
     public function __construct(
         protected ParameterBagInterface $ps,
         protected EntityManagerInterface $em,
-        protected PriceListManager $priceListManager,
+        protected PricelistManager $priceListManager,
         protected EventDispatcherInterface $eventDispatcher,
         protected TokenStorageInterface $tokenStorage,
         protected TaxManager $taxManager,
